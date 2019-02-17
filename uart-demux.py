@@ -11,15 +11,6 @@ import signal
 # INPUT_BAUD = input baud rate
 # OUTPUTS = devices for de-multiplexed data ["/dev/ttyADDRESS0", /dev/ttyADDRESS1", ...]
 # output baud rates don't matter since they are virtual pty devices that work on any baud rate
-#
-# Multiplexed data consists of packets structured as follows:
-#
-# [start] [address] [length] [payload] [checksum]
-# start: 1 byte == 0xAA
-# address: 1 byte, the demultiplexed address, starting from 0
-# length: 1 byte, length of the payload, should be between 1 and 255
-# payload: byte array with length specified above
-# checksum: 1 byte CRC8
 
 INPUT = "/dev/ttyTHS2"
 INPUT_BAUD = 57600
