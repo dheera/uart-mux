@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
+
 import serial, pty, os
 import time
 import signal
 
+# Multiplexes / demultiplexes one UART into multiple virtual UARTs.
+#
+# Configuration parameters:
+# INPUT = device for multiplexed data
+# INPUT_BAUD = input baud rate
+# OUTPUTS = devices for demultiplexed data ["/dev/ttyADDRESS0", /dev/ttyADDRESS1", ...]
+# output baud rates don't matter since they are virtual pty devices that work on any baud rate
+#
+# Multiplexed data consists of packets structured as follows:
+#
+# [start] [address] [length] [payload] [checksum]
+# start: 1 byte == 0xAA
+# address: 1 byte, the demultiplexed address, starting from 0
+# length: 1 byte, length of the payload, should be between 1 and 255
+# payload: byte array with length specified above
+# checksum: 1 byte CRC8
+
 INPUT = "/dev/ttyTHS2"
 INPUT_BAUD = 57600
-OUTPUTS = ["/dev/ttyEXT0", "/dev/gps0", "/dev/roboclaw0", "/dev/ttyEXT2"]
+OUTPUTS = ["/dev/ttyNC0", "/dev/gps0", "/dev/roboclaw0", "/dev/ttyNC1", "/dev/imu0"]
 
 output_devices = []
 input_ser = serial.Serial(INPUT, INPUT_BAUD)
@@ -72,6 +90,8 @@ if __name__ == "__main__":
                     print("[warn] received data for address %d when there are only %d devices" % (address, len(OUTPUTS)))
                 else:
                     os.write(output_devices[address]["master"], payload)
+
+         # TODO other direction not written yet
 
     input_ser.close()
     for device in output_devices:
