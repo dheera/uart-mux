@@ -4,12 +4,12 @@ import serial, pty, os
 import time
 import signal
 
-# Multiplexes / demultiplexes one UART into multiple virtual UARTs.
+# De-multiplexes one real UART into multiple virtual UARTs.
 #
 # Configuration parameters:
 # INPUT = device for multiplexed data
 # INPUT_BAUD = input baud rate
-# OUTPUTS = devices for demultiplexed data ["/dev/ttyADDRESS0", /dev/ttyADDRESS1", ...]
+# OUTPUTS = devices for de-multiplexed data ["/dev/ttyADDRESS0", /dev/ttyADDRESS1", ...]
 # output baud rates don't matter since they are virtual pty devices that work on any baud rate
 #
 # Multiplexed data consists of packets structured as follows:
